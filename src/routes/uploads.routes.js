@@ -14,7 +14,9 @@ module.exports = app => {
             url_file = query[0].url;
             
           }else{
-            url_file = 'no_encontrados'
+            // ruta en donde se encuntran los archivos no encontrados
+            let url_folder = req.body.url_folder;
+            url_file = 'no_encontrados'+url_folder
           }
           let path_to_save = 'public/'+url_file;
           fs.mkdirSync(path_to_save, { recursive: true })
