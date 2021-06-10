@@ -8,6 +8,7 @@ module.exports = app => {
 
     const storage = multer.diskStorage({
         destination: async(req,file,cb) => {
+          let url_folder = req.body.url_folder;
           let url_file = '';
           let query = await db.query("SELECT url FROM files_copy1 WHERE originalName = ?",[file.originalname]);
           if(query.length!==0){
@@ -15,10 +16,9 @@ module.exports = app => {
             
           }else{
             // ruta en donde se encuntran los archivos no encontrados
-            let url_folder = req.body.url_folder;
-            url_file = 'no_encontrados'+url_folder
+            url_file = 'no_encontrados';
           }
-          let path_to_save = 'public/'+url_file;
+          let path_to_save = 'public'+url_folder+'/'+url_file;
           fs.mkdirSync(path_to_save, { recursive: true })
           cb(null,path_to_save);
         },
@@ -39,5 +39,5 @@ module.exports = app => {
       const upload = multer({ storage: storage });
   
     app.get('/api/prueba',uploadsController.prueba);
-    app.post('/api/uploads',upload.array('file[]',5),uploadsController.uploadFiles);
+    app.post('/api/uploads',upload.array('file[]',10),uploadsController.uploadFiles);
   };
